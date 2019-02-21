@@ -125,8 +125,6 @@ My final model consisted of the following layers:
 | Dropout				| Keep 50%										|
 | Fully connected		| 43 hidden units        						|
 | Softmax				| This represents the output probabilities		|
-|						|												|
-|						|												|
  
 Tensorboard visualization of model architecture:
 ![alt text][image9]
