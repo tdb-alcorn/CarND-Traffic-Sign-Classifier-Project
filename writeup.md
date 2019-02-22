@@ -89,21 +89,19 @@ exhibiting increased contrast.
 
 ![alt text][image3]
 
-### TODO(tom) ??
-I decided to generate additional data because ... 
 
-To add more data to the the data set, I used the following techniques because ... 
-
-Here is an example of an original image and an augmented image:
-
-![alt text][image3]
-
-The difference between the original data set and the augmented data set is the following ... 
+I decided to generate additional data because I found that the network was
+reaching a plateau of validation accuracy as it saturated what it could 
+learn from the original training data set, which consisted of only ~30,000
+images. To add more data to the the data set, I added an augmentation
+step to the input data pipeline, which randomly performed rotations, rescalings,
+crops and flip operations. This augmentation was performed at model training
+time using the Tensorflow Dataset API.
 
 
 #### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
-My final model consisted of the following layers:
+My final model was roughly based on LeNet, and consisted of the following layers:
 
 | Layer         		|     Description	        					| 
 |:---------------------:|:---------------------------------------------:| 
@@ -132,14 +130,18 @@ Tensorboard visualization of model architecture:
 
 #### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
-To train the model, I used Tensorflow's Adam optimizer with default parameters. I used 30 epochs with 100 batches per epoch and 100 images per batch.
+To train the model, I used Tensorflow's Adam optimizer with default parameters. I used 300 epochs with a batch size varying from 100 up to 5000 for the later epochs. The model was trained on an AWS p2.xlarge instance (Nvidia Tesla K80 gpu)
 
 #### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 My final model results were:
-* training set accuracy of ?
-* validation set accuracy of ? 
-* test set accuracy of ?
+
+* training set accuracy of 92.7%
+* validation set accuracy of 93.8%
+* test set accuracy of 93.1%
+
+Since the training, validation and test set accuracies are all roughly equal, I conclude that the model is not overfitting
+and will generalize well to new data.
 
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
@@ -148,10 +150,9 @@ If an iterative approach was chosen:
 * Which parameters were tuned? How were they adjusted and why?
 * What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
 
-If a well known architecture was chosen:
-* What architecture was chosen?
-* Why did you believe it would be relevant to the traffic sign application?
-* How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
+I came up with the basic architecture based on LeNet and added dropout layers to prevent overfitting. I experimented with
+adding a third convolutional layer but found that it did not help much and was much slower to converge, so I stuck
+with the simple architecture in the end. I chose LeNet because it has performed well on this exact task before. 
  
 
 ### Test a Model on New Images
@@ -178,7 +179,8 @@ Here are the results of the prediction:
 | Bicycles crossing 	| Keep right         							|
 
 
-The model was able to correctly guess 3 of the 5 traffic signs, which gives an accuracy of 60%. This compares favorably to the accuracy on the test set of ...
+The model was able to correctly guess 3 of the 5 traffic signs, which gives an accuracy of 60%. This compares poorly to
+the accuracy on the test set of 93.1%.
 
 #### 3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
@@ -189,17 +191,17 @@ The top 5 probabilities are as follows:
 
 ![alt text][image10]
 
-For example, in the first image, the model is relatively sure that this is
-'Ahead Only' (probability of 0.63), and the image does contain 'Ahead Only'.
+For example, in the first image, the model is very confident that this is
+'Ahead Only' (probability of 0.91), and the image does indeed contain 'Ahead Only'.
 The top five soft max probabilities, as shown in the image above, are
 
 | Probability         	|     Prediction	        					| 
 |:---------------------:|:---------------------------------------------:| 
-| .63         			| Ahead Only   									| 
-| .12     				| Turn right ahead 								|
-| .11					| Turn left ahead								|
-| .09	      			| Go straight or right			 				|
-| .01				    | Go straight or left  							|
+| .91         			| Ahead Only   									| 
+| .07     				| Turn right ahead 								|
+| .01					| Turn left ahead								|
+| .00	      			| Go straight or right			 				|
+| .00				    | Go straight or left  							|
 
 
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
